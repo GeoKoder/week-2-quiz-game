@@ -6,7 +6,7 @@ QuizMaster is a responsive, feature-packed quiz game crafted with **HTML5, CSS3,
 
 ## 🌐 Live Demo & Deployment
 
-👉 **[Launch Live QuizMaster Demo](https://geokoder.github.io/week-2quiz-game/)** 👈
+👉 **[Launch Live QuizMaster Demo](https://geokoder.github.io/week-2-quiz-game/)** 👈
 
 ---
 
