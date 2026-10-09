@@ -3,43 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz App</title>
+    <!-- SEO Meta Tags -->
+    <title>QuizMaster — Test Your Knowledge Across Kenya Trivia, Tech & Science</title>
+    <meta name="description" content="Engaging interactive web quiz application with Kenya Trivia, Technology, and Science categories. Features countdown timers, live scoring, grading, answer review, and high scores.">
+    <meta name="keywords" content="QuizMaster, Kenya Trivia, Tech Quiz, Science Quiz, Web Development, JavaScript Quiz">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="start-screen" id="start-screen">
-        <h1>The Quiz App</h1>
-        <p>The quiz app you've been waiting for. Making your weekends feel shorter and more lively.</p>
-        <button class="start-btn" id="start-btn">Start Quiz</button>
-        <div class="previous-score" id="previous-score"></div>
-    </div>
-
-    <div class="quiz-screen" id="quiz-screen">
-        <div class="quiz-meta-header">
-            <div class="current-score-disp" id="current-score-disp"></div>
-            <div class="timer-display" id="timer-display">⏱️ 15s</div>
+    <!-- Top Utility Navigation (Sound Toggle & High Scores shortcut) -->
+    <header class="app-topbar">
+        <div class="brand-chip">
+            <span class="brand-sparkle">✦</span>
+            <span class="brand-name">QuizMaster</span>
         </div>
-        <div class="progress-bar" id="progress-bar"></div>
-        <div class="question-text" id="question-text"></div>
-        <div class="answer-buttons" id="answer-buttons"></div>
-    </div>
-
-    <div class="results-screen" id="results-screen">
-        <div class="letter-grade" id="letter-grade"></div>
-        <div class="final-score" id="final-score"></div>
-        <div class="score-percentage" id="score-percentage"></div>
-        <div class="message" id="message"></div>
-        <div class="review-buttons">
-            <button id="review-btn">Review Answers</button>
-            <button id="restart-btn">Restart Quiz</button>
+        <div class="topbar-actions">
+            <!-- Audio Sound Toggle Button (Sound Effects Stretch Goal) -->
+            <button id="sound-toggle-btn" class="icon-toggle-btn" title="Toggle Sound Effects" aria-label="Toggle Sound Effects">
+                <span id="sound-icon">🔊</span>
+            </button>
+            <!-- High Score Board Navigation Link -->
+            <button id="topbar-highscores-btn" class="topbar-btn" aria-label="Open High Scores Board">
+                🏆 High Scores
+            </button>
         </div>
-    </div>
+    </header>
 
-    <div class="review-screen" id="review-screen">
-        <div class="card-container" id="card-container"></div>
-        <button id="results-btn">Back to Results</button>
-    </div>
+    <!-- App Main Container -->
+    <main class="app-container">
 
+        <!-- ===================================================================
+             SCREEN 1: Home / Category Selection Screen
+             =================================================================== -->
+        <section class="screen start-screen" id="start-screen" aria-label="Category Selection">
+            <div class="hero-content">
+                <h1 class="app-title">QuizMaster</h1>
+                <p class="app-subtitle">
+                    Challenge your wits across multiple domains! Select a category below, race against the clock, and claim your spot on the leaderboard.
+                </p>
+            </div>
+
+            <!-- Stretch Goal: Difficulty Selector (Easy: 20s, Medium: 15s, Hard: 10s) -->
+            <div class="difficulty-section">
+                <span class="section-label">Select Difficulty:</span>
+                <div class="difficulty-pills" role="radiogroup" aria-label="Quiz Difficulty Level">
+                    <button type="button" class="diff-btn" data-difficulty="easy" aria-checked="false" role="radio">
+                        <span class="diff-emoji">🌱</span> Easy <span class="diff-time">(20s • 1x)</span>
+                    </button>
+                    <button type="button" class="diff-btn active" data-difficulty="medium" aria-checked="true" role="radio">
+                        <span class="diff-emoji">⚡</span> Medium <span class="diff-time">(15s • 1.5x)</span>
+                    </button>
+                    <button type="button" class="diff-btn" data-difficulty="hard" aria-checked="false" role="radio">
+                        <span class="diff-emoji">🔥</span> Hard <span class="diff-time">(10s • 2x)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Categories Grid: 3 Categories (Kenya Trivia, Technology, Science) -->
+            <div class="categories-container">
+                <span class="section-label">Choose a Category:</span>
+                <div class="categories-grid" id="categories-grid">
+                    <!-- Populated dynamically via JS from quizCategories or rendered as fallback -->
+                    <article class="category-card" data-category="kenya-trivia">
+                        <div class="category-icon-wrapper">🇰🇪</div>
+                        <h2 class="category-title">Kenya Trivia</h2>
+                        <span class="category-subtitle">10 Questions</span>
+                        <p class="category-desc">Explore Kenya's rich history, iconic landmarks, athletics, and vibrant culture.</p>
+                        <button class="start-category-btn" data-category="kenya-trivia" aria-label="Start Kenya Trivia Quiz">
+                            Start Quiz <span>→</span>
+                        </button>
+                    </article>
+
+                    <article class="category-card" data-category="technology">
+                        <div class="category-icon-wrapper">💻</div>
+                        <h2 class="category-title">Technology</h2>
+                        <span class="category-subtitle">10 Questions</span>
+                        <p class="category-desc">Test your skills in web development, programming languages, and modern computing.</p>
+                        <button class="start-category-btn" data-category="technology" aria-label="Start Technology Quiz">
+                            Start Quiz <span>→</span>
+                        </button>
+                    </article>
+
+                    <article class="category-card" data-category="science">
+                        <div class="category-icon-wrapper">🔬</div>
+                        <h2 class="category-title">Science</h2>
+                        <span class="category-subtitle">10 Questions</span>
+                        <p class="category-desc">Journey through physics, chemistry, biology, and the mysteries of the cosmos.</p>
+                        <button class="start-category-btn" data-category="science" aria-label="Start Science Quiz">
+                            Start Quiz <span>→</span>
+                        </button>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Previous Score Indicator (shows user's most recent completion) -->
+            <div class="previous-score" id="previous-score" aria-live="polite"></div>
+        </section>
+
+        <!-- ===================================================================
+             SCREEN 2: Quiz Gameplay Screen
+             =================================================================== -->
+        <section class="screen quiz-screen" id="quiz-screen" aria-label="Quiz Gameplay" style="display: none;">
+            <!-- Quiz Header: Category (Left), Running Score (Center), Timer (Right) -->
+            <div class="quiz-header">
+                <div class="quiz-category-badge" id="active-category-badge">🇰🇪 Kenya Trivia</div>
+                <div class="running-score-badge" id="running-score-badge">Score: 0 / 10</div>
+                <div class="timer-display" id="timer-display" aria-live="assertive">⏱️ 15s</div>
+            </div>
+
+            <!-- Visual Progress Bar (Fills as user progresses through questions) -->
+            <div class="progress-bar-container" aria-label="Quiz Progress">
+                <div class="progress-bar-fill" id="progress-bar"></div>
+            </div>
+
+            <!-- Question Number Counter (e.g. "Question 3 of 10") -->
+            <div class="question-meta-row">
+                <span class="question-counter-pill" id="question-counter">Question 1 of 10</span>
+                <span class="difficulty-indicator-pill" id="difficulty-indicator">⚡ Medium</span>
+            </div>
+
+            <!-- Question Text (Large, Centered) -->
+            <h2 class="question-text" id="question-text">Loading question...</h2>
+
+            <!-- 4 Multiple Choice Answer Buttons (2x2 Grid / Stack) -->
+            <div class="answer-buttons-grid" id="answer-buttons" role="group" aria-label="Answer options"></div>
+
+            <!-- Visual Feedback Toast Message (e.g. "Correct!", "Time Expired!") -->
+            <div class="feedback-toast" id="feedback-toast" aria-live="polite"></div>
+        </section>
+
+        <!-- ===================================================================
+             SCREEN 3: Results Screen
+             =================================================================== -->
+        <section class="screen results-screen" id="results-screen" aria-label="Quiz Results" style="display: none;">
+            <!-- Large Score Display and Grade Badge -->
+            <div class="results-header">
+                <div class="letter-grade-wrapper">
+                    <div class="letter-grade" id="letter-grade">A</div>
+                    <span class="grade-label">Grade</span>
+                </div>
+                <h2 class="final-score" id="final-score">You scored 8/10!</h2>
+                <div class="score-percentage" id="score-percentage">80% Accuracy</div>
+                <p class="message" id="message">Excellent work! You really know your stuff!</p>
+            </div>
+
+            <!-- Detailed Stats Breakdown (Correct, Incorrect, Timed Out) -->
+            <div class="stats-breakdown-grid">
+                <div class="stat-card stat-correct">
+                    <span class="stat-number" id="stat-correct-count">8</span>
+                    <span class="stat-label">✓ Correct</span>
+                </div>
+                <div class="stat-card stat-incorrect">
+                    <span class="stat-number" id="stat-incorrect-count">1</span>
+                    <span class="stat-label">✕ Incorrect</span>
+                </div>
+                <div class="stat-card stat-timeout">
+                    <span class="stat-number" id="stat-timeout-count">1</span>
+                    <span class="stat-label">⏱️ Timed Out</span>
+                </div>
+            </div>
+
+            <!-- High Score Submission Form -->
+            <div class="save-score-card" id="save-score-card">
+                <h3 class="save-score-title">💾 Save Your High Score</h3>
+                <form id="save-score-form" class="save-score-form" onsubmit="return false;">
+                    <input 
+                        type="text" 
+                        id="player-name-input" 
+                        class="player-name-input" 
+                        placeholder="Enter your name (e.g. Amani)" 
+                        maxlength="20" 
+                        required
+                        aria-label="Player Name"
+                    />
+                    <button type="submit" id="save-score-btn" class="save-score-btn">Save Score</button>
+                </form>
+                <div class="save-score-msg" id="save-score-msg"></div>
+            </div>
+
+            <!-- Category Top Scores Mini-Leaderboard -->
+            <div class="results-leaderboard-preview">
+                <h3 class="preview-title">🏆 Top Scores for this Category</h3>
+                <div class="mini-scores-list" id="results-mini-scores">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
+            <!-- Action Navigation Buttons -->
+            <div class="results-actions">
+                <button id="review-btn" class="btn btn-secondary">
+                    📝 Review Answers
+                </button>
+                <button id="play-again-btn" class="btn btn-primary">
+                    🔄 Play Again
+                </button>
+                <button id="choose-category-btn" class="btn btn-accent">
+                    🧭 Choose Category
+                </button>
+                <button id="view-all-highscores-btn" class="btn btn-ghost">
+                    🏆 View Leaderboard
+                </button>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             SCREEN 4: Answer Review Screen
+             =================================================================== -->
+        <section class="screen review-screen" id="review-screen" aria-label="Review Answers" style="display: none;">
+            <div class="review-header">
+                <h2>Answer Review</h2>
+                <p class="review-subtitle" id="review-subtitle">Review each question with correct answers and explanations.</p>
+            </div>
+
+            <!-- Scrollable List of All 10 Questions -->
+            <div class="review-card-container" id="card-container"></div>
+
+            <div class="review-footer-actions">
+                <button id="results-btn" class="btn btn-primary">
+                    ← Back to Results
+                </button>
+                <button id="review-home-btn" class="btn btn-secondary">
+                    🏠 Return to Categories
+                </button>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             SCREEN 5: High Score Board (Modal / Dedicated Screen)
+             =================================================================== -->
+        <section class="screen highscores-screen" id="highscores-screen" aria-label="High Scores Leaderboard" style="display: none;">
+            <div class="highscores-header">
+                <h2>🏆 Hall of Fame</h2>
+                <p class="highscores-subtitle">Top 10 High Scores across all quizzes stored in localStorage</p>
+            </div>
+
+            <!-- Category Filter Tabs -->
+            <div class="leaderboard-filter-tabs" id="leaderboard-filter-tabs" role="tablist">
+                <button class="filter-tab-btn active" data-filter="all">All Categories</button>
+                <button class="filter-tab-btn" data-filter="kenya-trivia">Kenya Trivia</button>
+                <button class="filter-tab-btn" data-filter="technology">Technology</button>
+                <button class="filter-tab-btn" data-filter="science">Science</button>
+            </div>
+
+            <!-- High Scores Table -->
+            <div class="highscores-table-container">
+                <table class="highscores-table" id="highscores-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Category</th>
+                            <th>Score</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="highscores-table-body">
+                        <!-- Populated via JS -->
+                    </tbody>
+                </table>
+                <div class="empty-scores-state" id="empty-scores-state" style="display: none;">
+                    <p>No high scores recorded yet! Play a quiz and be the first on the board.</p>
+                </div>
+            </div>
+
+            <!-- High Scores Action Controls -->
+            <div class="highscores-actions">
+                <button id="close-highscores-btn" class="btn btn-primary">
+                    ← Back
+                </button>
+                <button id="clear-highscores-btn" class="btn btn-danger" title="Clear all high scores from storage">
+                    🗑️ Reset Leaderboard
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Celebration Confetti Canvas (Triggered on High Score & Grade A) -->
+    <canvas id="confetti-canvas" class="confetti-canvas" aria-hidden="true"></canvas>
+
+    <!-- Script Imports -->
     <script src="questions.js"></script>
     <script src="script.js"></script>
 </body>
